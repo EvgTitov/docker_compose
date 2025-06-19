@@ -1,0 +1,58 @@
+services:
+  #База данных
+  db:
+    image: postgres:16.0
+    environment:
+      POSTGRES_DB: "testdb"
+      POSTGRES_USER: "testuser"
+      POSTGRES_PASSWORD: "testpass"
+    volumes:
+      - db_cont:/var/lib/postgresql/data
+
+  #Веб сервер
+  nginx:
+    image: nginx
+    ports: 
+      - "80:80"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./app:/var/www/html
+    depends_on:
+      - php
+
+  #PHP
+  php:
+    image: php:8.1-fpm
+
+    #build:
+      #context: ./php
+      #dockerfile: Dockerfile
+
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./app:/var/www/html
+      - ./php/php.ini:/usr/local/etc/php/php.ini
+
+  #Redis
+  redis:
+    image: redis:6
+    environment:
+      REDIS_HOST: "redis"
+      REDIS_PORT: 6379
+    volumes:
+      - redis_cont:/data
+    ports:
+      - "6379:6379"
+
+#Сеть
+networks:
+  default:
+    driver: bridge
+
+#Храние томов
+volumes:
+  db_cont:
+    driver: local
+  redis_cont:
+    driver: local
