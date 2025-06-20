@@ -19,7 +19,7 @@
        
     - name: Клонирование проекта
       git:
-        repo: https://github.com/EvgTitov/docker_compose/tree/main/Docker
+        repo: https://github.com/EvgTitov/docker_compose
         dest: /home/docker_compose
         recursive: yes
 
