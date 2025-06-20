@@ -1,0 +1,29 @@
+---
+- name: Разработка Ansible-плейбука
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Установка Docker
+      apt:
+        name:
+          - docker.io
+          - docker-compose
+        state: present
+        
+    - name: Создание директории для проекта
+      file:
+        path: /home/docker_compose
+        state: directory
+        mode: '777' 
+       
+    - name: Клонирование проекта
+      git:
+        repo: https://github.com/EvgTitov/docker_compose/tree/main/Docker
+        dest: /home/docker_compose
+        recursive: yes
+
+    - name: Запуск docker-compose
+      command: docker-compose up -d
+      args:
+        chdir: /home/docker_compose
